@@ -1,5 +1,8 @@
 from .db import db
-
+from passlib.apps import custom_app_context as pwd_context
+from itsdangerous import (TimedJSONWebSignatureSerializer
+                          as Serializer, BadSignature, SignatureExpired)
+from exam.configs import SECRET_KEY
 
 class Users(db):
     def save(self, data):
@@ -7,11 +10,19 @@ class Users(db):
             INSERT INTO Users(email, password)
             VALUES (?, ?)
         '''
+        sql_select = '''
+        select id, email, password from users
+        where email = ?
+        '''
         params = (data['email'], data['password'])
         self.create_conn()
         response = self.do(sql, params=params, commit=True)
+        if response['code'] != 200:
+            self.close_conn()
+            return response
+        response = self.do(sql_select, params=(data['email'],), out=True)
         self.close_conn()
-        return response
+        return dict(code=200, data=response['data'][0])
 
     def getByEmail(self, email):
         sql = '''
@@ -54,3 +65,22 @@ class Users(db):
                 "password": user[2]
             })
         return dict(code=200, data=userslist)
+
+
+class User:
+    id = None
+    email = None
+
+    def __init__(self, email, pwd):
+        self.email = email
+        self.password_hash = pwd_context.encrypt(pwd)
+
+
+
+    def verify_password(self, pwd):
+        return pwd_context.verify(pwd, self.password_hash)
+
+    def generate_auth_token(self, expiration=600):
+        s = Serializer(SECRET_KEY, expires_in=expiration)
+        return s.dumps({"id": self.id,
+                        "email": self.email})
