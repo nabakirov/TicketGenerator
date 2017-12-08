@@ -19,6 +19,6 @@ class QuestionController:
         response = questionDB.update(data)
         return response
 
-    def getListBySubject_id(self, subject_id):
-        response = questionDB.getListBySubject_id(subject_id)
+    def getListBySubject_id(self, subject_id, user_id):
+        response = questionDB.getListBySubject_id(subject_id, user_id)
         return response

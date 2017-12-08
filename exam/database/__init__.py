@@ -1,2 +1,3 @@
 from .users import Users
-from .staff import Subject, Question
+from .question import Question
+from .subject import Subject

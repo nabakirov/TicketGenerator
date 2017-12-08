@@ -2,7 +2,7 @@ from flask import make_response, jsonify
 
 
 def HTTP_OK(data=None, status=200, message='OK', **kwargs):
-    if not isinstance(data, dict) or not isinstance(data, list):
+    if not isinstance(data, dict):
         data = dict(
             status=status,
             message=message
@@ -16,7 +16,7 @@ def HTTP_OK(data=None, status=200, message='OK', **kwargs):
 
 
 def HTTP_ERR(data=None, status=500, message='INTERNAL SERVER ERROR', **kwargs):
-    if not isinstance(data, dict) or not isinstance(data, list):
+    if not isinstance(data, dict):
         data = dict(
             status=status,
             error=message

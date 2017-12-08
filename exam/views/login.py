@@ -4,6 +4,7 @@ from exam.security import to_hash, password_verification, generate_auth_token
 from ..database import Users
 from ..configs import DB_PATH
 from exam.security import secured
+from exam.utils import getargs, HTTP_ERR, HTTP_OK
 
 usersDB = Users(db_path=DB_PATH)
 
@@ -12,16 +13,18 @@ usersDB = Users(db_path=DB_PATH)
 def login():
     if request.method == 'GET':
         return render_template('login/login.html')
-
-    email = request.form['email']
+    email, password = getargs(request, 'email', 'password')
+    if not email or not password:
+        return abort(401)
     exist = usersDB.getByEmail(email)
+    if exist['code'] == 404:
+        return HTTP_ERR(status=400, message='user does not exist')
     if exist['code'] != 200:
-        return '{}'.format(exist['message'])
-    if password_verification(request.form['password'], exist['data']['password']):
+        return HTTP_ERR(status=500, message=exist['message'])
+    if password_verification(password, exist['data']['password']):
         user = exist['data']
-
         return generate_auth_token(user)
-    return 'Bad login'
+    return HTTP_ERR(status=401, message='bad login')
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -29,37 +32,31 @@ def register():
     if request.method == 'GET':
         return render_template('login/register.html')
 
-    email = request.json.get('email')
-    password = request.json.get('password')
+    email, password = getargs(request, 'email', 'password')
 
     if not email or not password:
-        return 'parameter is missing'
+        return HTTP_ERR(message='parameter is missing', status=400)
     exist = usersDB.getByEmail(email)
     if exist['code'] == 200:
-        return 'user already exist by this email {}'.format(email)
+        return HTTP_ERR(message='user already exist by this email {}'.format(email), status=401)
 
     if exist['code'] != 404:
-        return exist['message']
+        return HTTP_ERR(message=exist['message'])
     data = {
         "email": email,
-        "password": to_hash(password),
-        "type": 'GOD'
+        "password": to_hash(password)
     }
     response = usersDB.save(data)
     if response['code'] != 200:
-        return response['message']
-    token = generate_auth_token(response['data'], expiration=None)
-    return token
+        return HTTP_ERR(message=response['message'])
+    token = generate_auth_token(response['data'])
+    return HTTP_OK(token=token.decode(), data=response['data'])
 
 
-@app.route('/update_token')
-@secured('user')
-def get_token():
-    token = generate_auth_token(g.user)
-    return token
+@app.route('/api/update_token')
+@secured()
+def updateToken():
+    token_data = updateToken._token_data
+    new_token = generate_auth_token(token_data)
+    return new_token
 
-
-@app.route('/protected', methods=['GET'])
-@secured('user')
-def protected():
-    return 'Logged in as: {}\ndatabase id: {}'.format(g.user.get('email'), g.user.get('id'))

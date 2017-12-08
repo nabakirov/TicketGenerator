@@ -5,6 +5,14 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
 from exam.configs import SECRET_KEY
 
 class Users(db):
+    @staticmethod
+    def parse(raw):
+        return dict(
+            id=raw[0],
+            email=raw[1],
+            password=raw[2]
+        )
+
     def save(self, data):
         sql = '''
             INSERT INTO Users(email, password)
@@ -22,7 +30,9 @@ class Users(db):
             return response
         response = self.do(sql_select, params=(data['email'],), out=True)
         self.close_conn()
-        return dict(code=200, data=response['data'][0])
+        if response['code'] != 200:
+            return response
+        return dict(code=200, data=dict(data=self.parse(response['data'][0])))
 
     def getByEmail(self, email):
         sql = '''
