@@ -11,7 +11,7 @@ def to_hash(password):
     return pwd_context.encrypt(password)
 
 
-def generate_auth_token(data, secret_key=SECRET_KEY, expiration=600):
+def generate_auth_token(data, secret_key=SECRET_KEY, expiration=60 * 60):
     s = Serializer(secret_key, expires_in=expiration)
     return s.dumps(data)
 
@@ -24,4 +24,6 @@ def extract_auth_token(token, secret_key=SECRET_KEY):
         return None
     except BadSignature:
         return None
+    if 'data' in data:
+        return data['data']
     return data

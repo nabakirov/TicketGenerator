@@ -20,20 +20,27 @@ class Generate:
             self.qList = qList['data']
             self.count = len(qList['data'])
 
+    def getQlist(self):
+        return self.qList
 
     def getTickets(self):
         if not self.qList:
             return dict(code=404, message='question list is empty')
         from random import choice
         tickets = []
-        for i in range(self.make_ticket_cnt):
+
+        for i in range(1, self.make_ticket_cnt):
             q = []
-            for j in range(self.make_q_cnt):
-                randQ = choice(self.qList)
+            qList = self.getQlist()
+            for j in range(1, self.make_q_cnt):
+
+                randQ = choice(qList)
+                print(i, j, qList)
+                qList.remove(randQ)
+                print(i, j, qList)
                 q.append(
                     {
                         'q_number': j,
-                        'title': randQ['title'],
                         'text': randQ['text']
                     }
                 )

@@ -6,13 +6,12 @@ class Question(db):
             insert into Questions(
                 user_id,
                 subject_id,
-                title,
                 text,
                 hardness,
                 uploaded)
-            values(?, ?, ?, ?, ?, ?)
+            values(?, ?, ?, ?, ?)
         '''
-        params = (data['user_id'], data['subject_id'], data['title'], data['text'], data['hardness'], data['uploaded'])
+        params = (data['user_id'], data['subject_id'], data['text'], data['hardness'], data['uploaded'])
         self.create_conn()
         sql_response = self.do(sql, params=params, commit=True)
         self.close_conn()
@@ -22,12 +21,11 @@ class Question(db):
         sql = '''
             update Questions set
                 subject_id = ?,
-                title = ?,
                 text = ?,
                 hardness = ?
             where id = ?
         '''
-        params = (data['subject_id'], data['title'], data['text'], data['hardness'], data['id'])
+        params = (data['subject_id'], data['text'], data['hardness'], data['id'])
         self.create_conn()
         sql_response = self.do(sql, params=params, commit=True)
         self.close_conn()
@@ -49,7 +47,6 @@ class Question(db):
                 id,
                 user_id,
                 subject_id,
-                title,
                 text,
                 hardness,
                 uploaded
@@ -71,10 +68,9 @@ class Question(db):
                 'id': qs[0],
                 'user_id': qs[1],
                 'subject_id': qs[2],
-                'title': qs[3],
-                'text': qs[4],
-                'hardness': qs[5],
-                'uploaded': qs[6]
+                'text': qs[3],
+                'hardness': qs[4],
+                'uploaded': qs[5]
             })
         return dict(code=200, data=response)
 

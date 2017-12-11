@@ -14,13 +14,19 @@ questionAPI = QuestionController()
 def subject_list(user_id):
     token_data = subject_list._token_data
     tokenUserId = token_data.get('id')
-    if tokenUserId != int(user_id):
-        return abort(401)
+
+    try:
+        user_id = int(user_id)
+    except:
+        return HTTP_ERR(status=400, message='bad user id')
+    if tokenUserId != user_id:
+        return HTTP_ERR(status=401, message='unauthorized')
     if request.method == 'GET':
         sList = subjectAPI.getListByUser_id(user_id)
         if sList['code'] != 200:
-            return HTTP_ERR(message=sList['message'])
-        return HTTP_OK(data=dict(data=sList['data']))
+
+            return HTTP_ERR(status=sList['code'], message=sList['message'])
+        return HTTP_OK(data=sList['data'])
     id_, name = getargs(request, 'id', 'name')
     if not name:
         return HTTP_ERR(status=400, message='parameters is missing')
@@ -43,15 +49,15 @@ def subject_list(user_id):
 @app.route('/api/<user_id>/<subject_id>', methods=['GET', 'POST'])
 @secured()
 def question_list(user_id, subject_id):
-    token_data = subject_list._token_data
+    token_data = question_list._token_data
     tokenUserId = token_data.get('id')
     if tokenUserId != int(user_id):
         return abort(401)
     if request.method == 'GET':
         qList = questionAPI.getListBySubject_id(subject_id, user_id)
         if qList['code'] != 200:
-            return qList['message']
-        return jsonify(qList['data'])
+            return HTTP_OK(message=qList['message'])
+        return HTTP_OK(data=qList['data'])
     if request.method == 'POST':
         text, hardness, id_ = getargs(request, 'text', 'hardness', 'id')
         if not text or not hardness:
@@ -65,14 +71,14 @@ def question_list(user_id, subject_id):
         if id_:
             data['id'] = id_
             response = questionAPI.update(data)
-            return jsonify(response)
+            return HTTP_OK(data=response)
         response = questionAPI.save(data)
-        return jsonify(response)
+        return HTTP_OK(data=response)
 
 
 from exam.api import Generate
 
-@app.route('/api/generate/<user_id>/<subject_id>')
+@app.route('/api/generate/<user_id>/<subject_id>', methods=['POST'])
 @secured()
 def generate_handler(user_id, subject_id):
     token_data = generate_handler._token_data
@@ -84,4 +90,4 @@ def generate_handler(user_id, subject_id):
     tickets = generate.getTickets()
     if tickets['code'] != 200:
         return HTTP_ERR(status=tickets['code'], message=tickets['message'])
-    return HTTP_OK(tickets['data'])
+    return HTTP_OK(data=tickets['data'])

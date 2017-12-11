@@ -1,6 +1,6 @@
 from exam import app
 from flask import request, Response, redirect, url_for, render_template, g, jsonify, abort
-from exam.security import to_hash, password_verification, generate_auth_token
+from exam.security import to_hash, password_verification, generate_auth_token, extract_auth_token
 from ..database import Users
 from ..configs import DB_PATH
 from exam.security import secured
@@ -9,10 +9,8 @@ from exam.utils import getargs, HTTP_ERR, HTTP_OK
 usersDB = Users(db_path=DB_PATH)
 
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/api/login", methods=["POST"])
 def login():
-    if request.method == 'GET':
-        return render_template('login/login.html')
     email, password = getargs(request, 'email', 'password')
     if not email or not password:
         return abort(401)
@@ -23,17 +21,14 @@ def login():
         return HTTP_ERR(status=500, message=exist['message'])
     if password_verification(password, exist['data']['password']):
         user = exist['data']
-        return generate_auth_token(user)
+        token = generate_auth_token(user).decode()
+        return HTTP_OK(data=user, token=token)
     return HTTP_ERR(status=401, message='bad login')
 
 
-@app.route('/register', methods=['POST', 'GET'])
+@app.route('/api/register', methods=['POST'])
 def register():
-    if request.method == 'GET':
-        return render_template('login/register.html')
-
     email, password = getargs(request, 'email', 'password')
-
     if not email or not password:
         return HTTP_ERR(message='parameter is missing', status=400)
     exist = usersDB.getByEmail(email)
@@ -59,4 +54,16 @@ def updateToken():
     token_data = updateToken._token_data
     new_token = generate_auth_token(token_data)
     return new_token
+
+
+@app.route('/api/verify', methods=['GET', 'POST'])
+def token_verification():
+    token = getargs(request, 'token')[0]
+    if not token:
+        return b'0'
+    try:
+        data = extract_auth_token(token)
+        return HTTP_OK(data=data)
+    except:
+        return b'0'
 

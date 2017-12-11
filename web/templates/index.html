@@ -1,0 +1,165 @@
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript" scr="/static/js/storage.js"></script>
+<div id="list">
+
+</div>
+<button onclick="logout()">logout</button>
+<script type="text/javascript">
+	print = console.log
+	function getToken(){
+		token = null
+		try{
+			token = localStorage.getItem('token');
+		}
+		catch(e){
+			token = null;
+		}
+		return token;
+	}
+	function setToken(token){
+		ok = false;
+		try{
+			localStorage.setItem('token', token);
+			ok = true;
+		}
+		catch(e){
+			ok = false;
+		}
+		return ok;
+	}
+	function logout(){
+		window.localStorage.clear();
+		location.reload();
+	}
+	function getUserData(token){
+		
+		return axios({
+			method: 'post',
+			url: '/api/verify',
+			data: {
+				token: token
+			}
+		}).then(function(response){
+			return response.data;
+		}).catch(error =>{
+			return error.response.data;
+		});
+		
+	}
+	function getSubjects(uid, token){
+		api = '/api/'
+		return axios({
+			method: 'get',
+			url: api.concat(uid),
+			params: {
+				token: token
+			}
+		}).then(function(response){
+			return response.data;
+		}).catch(error =>{
+			return error.response.data;
+		});
+	}
+	function getQuestions(uid, sid, token){
+		
+		return axios({
+			method: 'get',
+			url: '/api/' + uid + '/' + sid,
+			params: {
+				token: token
+			}
+		}).then(function(response){
+			return response.data;
+		}).catch(error =>{
+			return error.response.data;
+		});
+	}
+	function loadq(uid, sid){
+		getQuestions(uid, sid, getToken()).then(function (response){
+
+			divCom = document.getElementById(sid);
+			if(divCom.childNodes.length > 1){
+				child = document.getElementById('qlist%'.replace('%', sid));
+				print(child);
+				divCom.removeChild(child);
+
+			}
+			
+			newDiv = document.createElement('div')
+			newDiv.setAttribute('id', 'qlist%'.replace('%', sid))
+			print(response)
+			if(!response.data){
+				p = document.createElement('p')
+				p.appendChild(document.createTextNode('question list is empty'))
+				newDiv.appendChild(p)
+			}
+			else{
+				response.data.forEach(function(q, index, array){
+					p = document.createElement('p')
+					p.appendChild(document.createTextNode(q.text))
+					newDiv.appendChild(p)
+				})
+			}
+			
+			divCom.appendChild(newDiv)
+			
+		})
+	}
+	token = getToken();
+	if (!token){
+		window.location.href = "/login";
+	}
+
+	getUserData(token).then(function(data){
+		if (data.status != 200){
+			window.location.href = "/login";
+		}
+		user_id = data.data.id
+		print(user_id)
+		getSubjects(user_id, token).then(function(response){
+			if(response.status != 200){
+				alert(response.message);
+				return;
+			}
+			else{
+
+
+				response.data.forEach(function qfunc(subject, index, array){
+					subject_id = subject.id
+					var newDiv = document.createElement('div')
+					var link = document.createElement('p')
+					newDiv.setAttribute('id', subject.id)
+					newDiv.setAttribute('onclick', "loadq(uid, sid)".replace('uid', user_id).replace('sid', subject_id))
+					var p = document.createTextNode(subject.name)
+					link.appendChild(p);
+					newDiv.appendChild(link)
+					document.getElementById('list').appendChild(newDiv)
+					// getQuestions(data.id, subject.id, token).then(function(response){
+					// 	print(response)
+					// })
+				})
+			}
+		})
+		
+	})
+
+	
+	// if (!user_data.data){
+	// 	window.location.href = "/login";
+	// }
+
+	// uSubjects = getSubjects(1, token)
+	// print(uSubjects)
+	
+
+    // axios('/api/verify',{
+    // 	params:{
+    // 		token: 'eyJleHAiOjE1MTI4NDAwMzEsImlhdCI6MTUxMjgzNjQzMSwiYWxnIjoiSFMyNTYifQ.eyJpZCI6MSwicGFzc3dvcmQiOiIkNiRyb3VuZHM9NjU2MDAwJEVFMW9KUTVVd1N2Z2lGN2UkRkFKTHFpa1A1Umg2LmZXRmN1Sm9qZFp6YkpEMGE4UzF3S1EwRVJtZHJ1OTZ6d1lWMlNidUl6Y2VWVk4wVldkZFlBNzhqNC83YkExVTJmUHdoZ2tVRC8iLCJlbWFpbCI6Im5hYmFraXJvdkBnbWFpbC5jb20ifQ.nzwgT14CJTMwW_JT7RZJx2aAosEsK7_paZV5aM9RoQY'
+    // 	}
+    // })
+    // 	.then(function(response){
+    // 		console.log(response.data);
+    // 	})
+
+</script>

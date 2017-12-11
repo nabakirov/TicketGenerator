@@ -2,6 +2,16 @@ from flask import make_response, jsonify
 
 
 def HTTP_OK(data=None, status=200, message='OK', **kwargs):
+    resp = dict()
+    if data:
+        resp['data'] = data
+    resp['message'] = message
+    resp['status'] = status
+    resp.update(kwargs)
+    return jsonify(resp), status
+
+
+def HTTP_ERR(data=None, status=500, message='INTERNAL SERVER ERROR', **kwargs):
     if not isinstance(data, dict):
         data = dict(
             status=status,
@@ -12,24 +22,9 @@ def HTTP_OK(data=None, status=200, message='OK', **kwargs):
         data['message'] = message
     if 'status' not in data:
         data['status'] = status
+
+
     return jsonify(data), status
-
-
-def HTTP_ERR(data=None, status=500, message='INTERNAL SERVER ERROR', **kwargs):
-    if not isinstance(data, dict):
-        data = dict(
-            status=status,
-            error=message
-        )
-    data.update(kwargs)
-    if 'error' not in data:
-        data['error'] = message
-    if 'status' not in data:
-        data['status'] = status
-
-    r = make_response(jsonify(data))
-    r.headers['Access-Control-Allow-Origin'] = '*'
-    return r, status
 
 
 def getargs(request, *keys, default_val=None):

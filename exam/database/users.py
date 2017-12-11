@@ -9,8 +9,7 @@ class Users(db):
     def parse(raw):
         return dict(
             id=raw[0],
-            email=raw[1],
-            password=raw[2]
+            email=raw[1]
         )
 
     def save(self, data):
@@ -19,7 +18,7 @@ class Users(db):
             VALUES (?, ?)
         '''
         sql_select = '''
-        select id, email, password from users
+        select id, email from users
         where email = ?
         '''
         params = (data['email'], data['password'])
@@ -48,11 +47,12 @@ class Users(db):
         if response['code'] != 200:
             return response
         response = response['data'][0]
-        user = {
-            "id": response[0],
-            "email": response[1],
-            "password": response[2]
-        }
+        user = dict(
+            id=response[0],
+            email=response[1],
+            password=response[2]
+        )
+        # user = self.parse(response)
         return dict(code=200, data=user)
 
     def getList(self):
@@ -69,11 +69,7 @@ class Users(db):
             return response
         userslist = []
         for user in response['data']:
-            userslist.append({
-                "id": user[0],
-                "email": user[1],
-                "password": user[2]
-            })
+            userslist.append(self.parse(user))
         return dict(code=200, data=userslist)
 
 
