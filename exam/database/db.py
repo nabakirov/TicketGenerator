@@ -1,4 +1,3 @@
-import pyodbc
 
 import sqlite3
 
@@ -21,12 +20,7 @@ class db:
                 self.sql_connection = conn
             except:
                 self.sql_connection = None
-        else:
-            try:
-                conn = pyodbc.connect(self.sql_path)
-                self.sql_connection = conn
-            except:
-                self.sql_connection = None
+
 
     def close_conn(self):
         if self.sql_connection != None:
