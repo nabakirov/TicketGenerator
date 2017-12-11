@@ -9,7 +9,6 @@ function getToken(){
 	}
 	return token;
 }
-
 function setToken(token){
 	ok = false;
 	try{

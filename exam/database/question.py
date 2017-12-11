@@ -75,5 +75,3 @@ class Question(db):
         return dict(code=200, data=response)
 
 
-
-

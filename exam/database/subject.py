@@ -55,3 +55,4 @@ class Subject(db):
                 'name': subject[1]
             })
         return dict(code=200, data=sList)
+

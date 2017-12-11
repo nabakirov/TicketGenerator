@@ -36,4 +36,3 @@ def getargs(request, *keys, default_val=None):
         )
     return tuple(out)
 
-

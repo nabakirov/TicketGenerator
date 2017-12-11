@@ -3,6 +3,7 @@ from exam.configs import DB_PATH
 
 subjectDB = Subject(db_path=DB_PATH)
 
+
 class SubjectController:
     def save(self, data):
         response = subjectDB.save(data)

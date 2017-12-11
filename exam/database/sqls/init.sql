@@ -4,6 +4,7 @@ create table Subjects(
     user_id INT
 );
 
+
 CREATE TABLE Questions(
     id INT PRIMARY KEY IDENTITY(1, 1),
     user_id INT,

@@ -27,3 +27,4 @@ def extract_auth_token(token, secret_key=SECRET_KEY):
     if 'data' in data:
         return data['data']
     return data
+

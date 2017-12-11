@@ -1,7 +1,6 @@
 from exam.database import Question
 from exam.configs import DB_PATH
 from time import time as now
-
 questionDB = Question(db_path=DB_PATH)
 
 

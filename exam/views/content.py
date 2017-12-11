@@ -4,7 +4,6 @@ from exam.api import SubjectController, QuestionController
 from exam.utils import HTTP_ERR, HTTP_OK, getargs
 from exam.security import secured
 
-
 subjectAPI = SubjectController()
 questionAPI = QuestionController()
 

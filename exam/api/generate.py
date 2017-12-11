@@ -2,7 +2,6 @@ from exam.database import Question
 from ..configs import DB_PATH
 
 
-
 class Generate:
     def __init__(self, subject_id: int, user_id: int, ticket_cnt: int, q_cnt: int):
         self.db = Question(db_path=DB_PATH)

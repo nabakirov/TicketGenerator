@@ -2,7 +2,6 @@ from exam import app
 from flask import render_template, redirect
 from exam.security import secured
 
-
 @app.route('/')
 def index_template():
     return render_template('index.html')
