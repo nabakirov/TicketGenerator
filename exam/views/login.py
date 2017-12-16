@@ -60,11 +60,13 @@ def updateToken():
 def token_verification():
     token = getargs(request, 'token')[0]
     if not token:
-        return b'0'
+        return HTTP_ERR(status=401, message='bad token')
     try:
         data = extract_auth_token(token)
-        return HTTP_OK(data=data)
+        if data:
+            return HTTP_OK(data=data)
+        return HTTP_ERR(status=401, message='bad token')
     except:
-        return b'0'
+        return HTTP_ERR(status=401, message='bad token')
 
 

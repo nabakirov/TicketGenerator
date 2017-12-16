@@ -12,19 +12,15 @@ def HTTP_OK(data=None, status=200, message='OK', **kwargs):
 
 
 def HTTP_ERR(data=None, status=500, message='INTERNAL SERVER ERROR', **kwargs):
-    if not isinstance(data, dict):
-        data = dict(
-            status=status,
-            message=message
-        )
-    data.update(kwargs)
-    if 'message' not in data:
-        data['message'] = message
-    if 'status' not in data:
-        data['status'] = status
+    resp = dict()
+    if data:
+        resp['data'] = data
+    resp['message'] = message
+    resp['status'] = status
+    resp.update(kwargs)
+    return jsonify(resp), status
 
 
-    return jsonify(data), status
 
 
 def getargs(request, *keys, default_val=None):

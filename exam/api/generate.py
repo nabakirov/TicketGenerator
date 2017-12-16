@@ -1,5 +1,6 @@
 from exam.database import Question
 from ..configs import DB_PATH
+from .exportDoc import getDoc
 
 
 class Generate:
@@ -18,9 +19,9 @@ class Generate:
         else:
             self.qList = qList['data']
             self.count = len(qList['data'])
+        return qList['data']
 
-    def getQlist(self):
-        return self.qList
+
 
     def getTickets(self):
         if not self.qList:
@@ -28,19 +29,20 @@ class Generate:
         from random import choice
         tickets = []
 
-        for i in range(1, self.make_ticket_cnt):
+        for i in range(1, self.make_ticket_cnt + 1):
             q = []
-            qList = self.getQlist()
-            for j in range(1, self.make_q_cnt):
+
+            qList = self.qList[:]
+
+            for j in range(1, self.make_q_cnt + 1):
 
                 randQ = choice(qList)
-                print(i, j, qList)
                 qList.remove(randQ)
-                print(i, j, qList)
                 q.append(
                     {
                         'q_number': j,
-                        'text': randQ['text']
+                        'text': randQ['text'],
+                        'hardness': randQ['hardness']
                     }
                 )
             tickets.append(
@@ -49,4 +51,13 @@ class Generate:
                     'questions': q
                 }
             )
-        return dict(code=200, data=tickets)
+        data = {
+            "tickets": tickets,
+            "t_count": self.make_ticket_cnt,
+            "q_count": self.make_q_cnt,
+            "user_id": self.user_id,
+            "subject_id": self.subject_id
+        }
+        file_dir = getDoc(data)
+        data['file_path'] = file_dir
+        return dict(code=200, data=data)
