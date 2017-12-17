@@ -10,7 +10,9 @@ getUserData(token).then(function(data){
 		delFromStorage('email');
 		window.location.href = "/login";
 	}
-	
+	// localStorage.setItem('user_id', data.data.id);
+	// localStorage.setItem('email', data.data.email);
 	setToStorage('user_id', data.data.id);
 	setToStorage('email', data.data.email);
+	
 });

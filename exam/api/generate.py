@@ -58,6 +58,6 @@ class Generate:
             "user_id": self.user_id,
             "subject_id": self.subject_id
         }
-        file_dir = getDoc(data)
-        data['file_path'] = file_dir
+        filename = getDoc(data)
+        data['filename'] = filename
         return dict(code=200, data=data)

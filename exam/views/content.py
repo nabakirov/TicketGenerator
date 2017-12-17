@@ -1,10 +1,11 @@
 from exam import app
-from flask import request, jsonify, g, render_template, abort
+from flask import request, jsonify, g, render_template
 from exam.api import SubjectController, QuestionController
 from exam.utils import HTTP_ERR, HTTP_OK, getargs
 from exam.security import secured
 from flask import send_from_directory
 import os
+from exam.configs import FILES_PATH
 
 subjectAPI = SubjectController()
 questionAPI = QuestionController()
@@ -53,7 +54,7 @@ def question_list(user_id, subject_id):
     token_data = question_list._token_data
     tokenUserId = token_data.get('id')
     if tokenUserId != int(user_id):
-        return abort(401)
+        return HTTP_ERR(status=401, message='unauthorized')
     if request.method == 'GET':
         qList = questionAPI.getListBySubject_id(subject_id, user_id)
         if qList['code'] != 200:
@@ -90,31 +91,37 @@ def generate_handler(user_id, subject_id):
     ticket_cnt, q_cnt = getargs(request, 'ticket_cnt', 'question_cnt')
     if not ticket_cnt or not q_cnt:
         return HTTP_ERR(status=400, message='BAD REQUEST')
+    try:
+        ticket_cnt = int(ticket_cnt)
+        q_cnt = int(q_cnt)
+    except:
+        return HTTP_ERR(status=400, message='parameters must be integer')
     generate = Generate(subject_id, user_id, ticket_cnt, q_cnt)
     if q_cnt > generate.count:
         return HTTP_ERR(status=400, message='can only make {} questions per ticket'.format(generate.count))
     tickets = generate.getTickets()
     if tickets['code'] != 200:
         return HTTP_ERR(status=tickets['code'], message=tickets['message'])
-    file_path = tickets['data']['file_path']
-    del tickets['data']['file_path']
-    return HTTP_OK(data=tickets['data'], file_path=file_path)
+    filename = tickets['data']['filename']
+    del tickets['data']['filename']
+    return HTTP_OK(data=tickets['data'], filename=filename, download='/api/download?filename='+filename)
 
 
-@app.route('/api/download', methods=['POST'])
+@app.route('/api/download', methods=['POST', 'GET'])
 @secured()
 def downloadHandler():
     token_data = downloadHandler._token_data
     tokenUserId = token_data.get('id')
-    file_path = getargs(request, 'file_path')[0]
-    if not file_path:
+    filename = getargs(request, 'filename')[0]
+    if not filename:
         return HTTP_ERR(status=400, message='file path required')
-    folder, user_id, subject_id, filename = file_path.split('/')
+    user_id, subject_id, tcnt, qcnt, date = filename.split('_')
     if tokenUserId != int(user_id):
         return HTTP_ERR(status=401, message='UNAUTHORIZED')
-
-    if not os.path.isfile(file_path):
+    directory = "{}/{}/{}".format(FILES_PATH, user_id, subject_id)
+    if not os.path.isfile(directory + '/' + filename):
         return HTTP_ERR(status=400, message='File Does Not Exists')
-    dir = "{}/{}/{}".format(folder, user_id, subject_id)
-    path = os.path.abspath(dir)
+    
+    path = os.path.abspath(directory)
+    print(path, filename)
     return send_from_directory(path, filename)

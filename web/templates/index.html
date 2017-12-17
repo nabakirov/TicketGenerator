@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="/static/js/jquery-2.1.1.min.js"></script>
-  <script src="/static/js/materialize.js"></script>
-  <script src="/static/js/init.js"></script>
+
   <script src="/static/js/my/storage.js"></script>
   <script src="/static/js/axios.min.js"></script>
-  <script src="/static/js/my/funcs.js"></script>
+  <script src="/static/js/my/requests.js"></script>
   <script src="/static/js/my/verification.js"></script>
-  <script src="/static/js/my/question.js"></script>
+
+  
+
+
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
   <title>Генератор Билетов</title>
@@ -19,6 +20,19 @@
   <link href="/static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 <body>
+  <!-- <div>
+      <select id="listOfSubjects">
+        <option value="" disabled="" selected="">Выбери Предмет</option>
+        <option id="5" value="5">history</option>
+        <option id="6" value="6">math</option>
+        <option id="7" value="7">database</option>
+        <option id="8" value="8">computer science</option>
+        <option id="9" value="9">История</option>
+        <option id="10" value="10">Физика</option>
+        <option id="11" value="11">Мат</option>
+        <option id="12" value="12">TEst</option>
+      </select>
+    </div> -->
 
   <!-- NAV BAR -->
   <nav class="light-blue lighten-1" role="navigation">
@@ -28,6 +42,22 @@
       </ul>
       <aside id="left-sidebar-nav" class="hide-on-med-and-down">
         <ul id="slide-out" class="side-nav leftside-navigation ps-active-y" style="transform: translateX(0px); transform: translateY(65px); width: 20%">
+          <li class="bold" onclick="generate()">
+            <a class="collapsible-header waves-effect waves-cyan active">
+              <span class="nav-text">Генерировать</span>
+            </a>
+          </li>
+          <li class="bold" onclick="addNewSubject()">
+            <a class="collapsible-header waves-effect waves-cyan active">
+              <span class="nav-text">Добавить Предмет</span>
+            </a>
+          </li>
+          <li class="bold" onclick="addNewQuestion()">
+            <a class="collapsible-header waves-effect waves-cyan active">
+              <span class="nav-text">Добавить Вопрос</span>
+            </a>
+          </li>
+          <li id="desctop-subject-insert-flag"/>
           <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: -84px;">
             <div class="ps-scrollbar-x" style="left: 0px; width: 0px;">
             </div>
@@ -40,6 +70,22 @@
       </aside>
       <aside id="nav-mobile" class="side-nav">
         <ul id="slide-out" class="side-nav leftside-navigation ps-active-y" style="transform: translateX(0px); transform: translateY(65px);">
+          <li class="bold" onclick="generate()">
+            <a class="collapsible-header waves-effect waves-cyan active">
+              <span class="nav-text">Генерировать</span>
+            </a>
+          </li>
+          <li class="bold" onclick="addNewSubject()">
+            <a class="collapsible-header waves-effect waves-cyan active">
+              <span class="nav-text">Добавить Предмет</span>
+            </a>
+          </li>
+          <li class="bold" onclick="addNewQuestion()">
+            <a class="collapsible-header waves-effect waves-cyan active">
+              <span class="nav-text">Добавить Вопрос</span>
+            </a>
+          </li>
+          <li id="mobile-subject-insert-flag"/>
           <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: -84px;">
             <div class="ps-scrollbar-x" style="left: 0px; width: 0px;">
             </div>
@@ -58,22 +104,47 @@
   
   <!-- content -->
   <div id="content">
-    <div id="qlist">
-    </div>
+
   </div>
 
 
   <!-- end content -->
  
 
- 
+
 
   <!--  Scripts-->
-  
+  <script src="/static/js/jquery-2.1.1.min.js"></script>
+  <script src="/static/js/materialize.js"></script>
+  <script src="/static/js/init.js"></script>
+   <script type="text/javascript">
+   $(document).ready(function() {
+    $('select').material_select();
+  });
+ </script>
 
+  <script src="/static/js/my/funcs.js"></script>
   <script src="/static/js/my/subject.js"></script>
+  <script src="/static/js/my/generate.js"></script>
   <script src="/static/js/my/logic.js"></script>
 
 
   </body>
 </html>
+
+  
+   <!-- <div class="input-field col s12">
+    <select>
+      <option value="" disabled selected>Выбери Предмет</option>
+      <option value="1">Option 1</option>
+      <option value="2">Option 2</option>
+      <option value="3">Option 3</option>
+    </select>
+    <label>Materialize Select</label>
+  </div> -->
+<!--   <select>
+      <option value="0">Выбери Предмет</option>
+      <option value="1">Option 1</option>
+      <option value="2">Option 2</option>
+      <option value="3">Option 3</option>
+    </select> -->
