@@ -9,6 +9,5 @@ MarkupSafe==1.0
 olefile==0.44
 passlib==1.7.1
 Pillow==4.3.0
-pyodbc==4.0.21
 python-docx==0.8.6
 Werkzeug==0.12.2
