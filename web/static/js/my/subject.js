@@ -36,9 +36,12 @@ function addNewSubject(){
  //      <button>Сохранить</button>
  //    </div>
 	content = document.getElementById('content')
-	content.childNodes.forEach(function(data, index, arr){
-		content.removeChild(data);
-	});
+	if(content.childNodes.length > 0){
+		
+		content.childNodes.forEach(function(data, index, arr){
+			content.removeChild(data);
+		});
+	}
 
 	div = document.createElement('div');
 	p = document.createElement('p');

@@ -12,10 +12,12 @@ function appendQuestion(data){
 
 	var Cont = document.getElementById('content');
 	console.log(Cont);
-	
-	Cont.childNodes.forEach(function(data, index, arr){
-		Cont.removeChild(data);
-	});
+	if(Cont..childNodes.length > 0){
+		
+		Cont.childNodes.forEach(function(data, index, arr){
+			Cont.removeChild(data);
+		});
+	}
 	
 	var qlist = document.createElement('div');
 
@@ -95,9 +97,12 @@ function checkToAddQuestion(){
 
 function addNewQuestion(){
 	content = document.getElementById('content');
-	content.childNodes.forEach(function(data, index, arr){
-		content.removeChild(data);
-	});
+	if(content.childNodes.length > 0){
+		
+		content.childNodes.forEach(function(data, index, arr){
+			content.removeChild(data);
+		});
+	}
 	getSubjects(getFromStorage('user_id'), getFromStorage('token')).then(function(data){
 		if(data.status != 200){
 			alert(data.message);

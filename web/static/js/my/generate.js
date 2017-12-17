@@ -1,9 +1,12 @@
 function generate(){
 
 	content = document.getElementById('content');
-	content.childNodes.forEach(function(data, index, arr){
-		content.removeChild(data);
-	});
+	if(content.childNodes.length > 0){
+		
+		content.childNodes.forEach(function(data, index, arr){
+			content.removeChild(data);
+		});
+	}
 	getSubjects(getFromStorage('user_id'), getFromStorage('token')).then(function(data){
 		if(data.status != 200){
 			alert(data.message);
