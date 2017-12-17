@@ -12,8 +12,8 @@ function appendQuestion(data){
 
 	var Cont = document.getElementById('content');
 	console.log(Cont);
-	if(Cont..childNodes.length > 0){
-		
+	if(Cont.childNodes.length > 0){
+
 		Cont.childNodes.forEach(function(data, index, arr){
 			Cont.removeChild(data);
 		});
