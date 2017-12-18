@@ -6,6 +6,7 @@
     <title>register</title>
 </head>
 <body>
+	<script src="/static/js/my/storage.js"></script>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 	<script type="text/javascript">
 		print = console.log;
@@ -47,8 +48,9 @@
 				print(data)
 
 				if(data.status == 200){
-					setToken(data.token)
-					print(data.token)
+					setToStorage('token', data.token);
+					setToStorage('user_id', data.data.id);
+					setToStorage('email', data.data.email);
 					window.location.href = '/';
 				}
 				else{
