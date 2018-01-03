@@ -31,3 +31,22 @@
     display: none !important;
   }
 }
+
+.question{
+	position: relative;
+}
+
+.delbtn{
+	position: absolute;
+	top: 30%;
+	right: 0;
+}
+.subjectDelete{
+	top: 0;
+	border: none;
+	background-color: transparent;
+	color: #000;
+	right: 0;
+}
+
+

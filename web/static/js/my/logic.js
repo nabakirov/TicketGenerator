@@ -10,10 +10,7 @@ getSubjects(user_id, token).then(function(data){
 		delFromStorage('email');
 		window.location.href = "/login";
 	}
-	else if(data.status != 200){
-		alert(data.message);
-	}
-	else{
+	else if(data.status == 200){
 		var navbar = document.getElementById("usernavbar");
 		var logout = document.createElement("li");
 		var logoutBtn = document.createElement("a");

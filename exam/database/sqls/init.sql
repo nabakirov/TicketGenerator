@@ -1,22 +1,22 @@
 create table Subjects(
-    id INT PRIMARY KEY IDENTITY(1, 1),
-    name NVARCHAR(500),
+    id integer primary key,
+    name NVARCHAR,
     user_id INT
 );
 
 
 CREATE TABLE Questions(
-    id INT PRIMARY KEY IDENTITY(1, 1),
+    id integer primary key,
     user_id INT,
     subject_id INT,
-    title NVARCHAR(500),
-    text NVARCHAR(MAX),
+    title NVARCHAR,
+    text NVARCHAR,
     hardness INT,
     uploaded FLOAT
 );
 
 CREATE TABLE Users(
-    id INT PRIMARY KEY IDENTITY(1, 1),
-    password NVARCHAR(100),
-    email NVARCHAR(100)
+    id integer primary key,
+    password NVARCHAR,
+    email NVARCHAR
 );

@@ -88,6 +88,34 @@ function newQuestion(text, hardness, uid, sid, token){
 		return error.response.data;
 	});
 }
+function toDelSubject(id, token){
+	return axios({
+		method: 'get',
+		url: '/api/subject/delete',
+		params: {
+			token: token,
+			subject_id: id
+		}
+	}).then(function(response){
+		return response.data;
+	}).catch(error =>{
+		return error.response.data;
+	});
+}
+function toDelQuestion(id, token){
+	return axios({
+		method: 'get',
+		url: '/api/question/delete',
+		params: {
+			token: token,
+			question_id: id
+		}
+	}).then(function(response){
+		return response.data;
+	}).catch(error =>{
+		return error.response.data;
+	});
+}
 
 function toGenerate(t_cnt, q_cnt, uid, sid, token){
 	return axios({

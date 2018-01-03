@@ -6,25 +6,42 @@
 //             </li>
 
 
+function subjectDelete(id){
+	token = getFromStorage("token");
+	toDelSubject(id, token).then(function(data){
+		if (data.status != 200){
+			alert(data);
+		}
+		else{
+			window.location.reload();
+		}
+	});
+}
 
 function appendSubject(data){
+	var delBtn = document.createElement('button');
+	delBtn.className = "subjectDelete waves-effect waves-cyan";
+	delBtn.appendChild(document.createTextNode('удалить'))
+	delBtn.setAttribute("onclick", "subjectDelete($)".replace('$', data.id));
+
+
 	var li = document.createElement('li');
 	li.setAttribute('dbid', data.id);
-	li.setAttribute('class', 'bold');
+	li.setAttribute('class', 'bold subjectList');
 	li.setAttribute('onclick', "loadQuestions($)".replace('$', data.id))
 	var a = document.createElement('a');
-	a.setAttribute('class', "collapsible-header waves-effect waves-cyan active");
+	a.setAttribute('class', "waves-effect waves-cyan");
 	var span = document.createElement('span');
 	span.setAttribute('class', "nav-text");
 	var text = document.createTextNode(data.name);
 	span.appendChild(text);
 	a.appendChild(span);
 	li.appendChild(a);
+	li.appendChild(delBtn);
+	li.appendChild(document.createElement('hr'))
 
 	var des = document.getElementById('left-sidebar-nav').childNodes[1];
-	var mob = document.getElementById('nav-mobile').childNodes[1];
 	// console.log(li);
-	mob.insertBefore(li, document.getElementById('mobile-subject-insert-flag'));
 	des.insertBefore(li, document.getElementById('desctop-subject-insert-flag'));
 	// console.log(li);
 }
@@ -75,3 +92,4 @@ function checkToAddSubject(){
 	}
 	
 }
+

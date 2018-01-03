@@ -6,12 +6,24 @@
 //   </div>
 // </div>
 // </li>
+
+function questionDelete(id){
+	token = getFromStorage("token");
+	toDelQuestion(id, token).then(function(data){
+		if (data.status != 200){
+			alert(data);
+		}
+		else{
+			window.location.reload();
+		}
+	});
+}
+
 function appendQuestion(data){
 	// var li = document.createElement('li');
 	// li.setAttribute('dbid', data.id);
 
 	var Cont = document.getElementById('content');
-	console.log(Cont);
 	if(Cont.childNodes.length > 0){
 
 		Cont.childNodes.forEach(function(data, index, arr){
@@ -23,8 +35,12 @@ function appendQuestion(data){
 
 	qlist.setAttribute('id', 'qlist');
 	data.forEach(function(data, index, arr){
+		var delNote = document.createElement('button');
+		delNote.className = 'delbtn';
+		delNote.appendChild(document.createTextNode('удалить'));
+		delNote.setAttribute('onclick', 'questionDelete($)'.replace('$', data.id));
 		var card = document.createElement('div');
-		card.setAttribute('class', 'card');
+		card.setAttribute('class', 'card question');
 		var content = document.createElement('div');
 		content.setAttribute('class', 'card-content');
 		var text = document.createTextNode(data.text);
@@ -32,6 +48,7 @@ function appendQuestion(data){
 		p.appendChild(text);
 		content.appendChild(p);
 		card.appendChild(content);
+		card.appendChild(delNote);
 		qlist.appendChild(card);
 
 	});
@@ -51,10 +68,7 @@ function loadQuestions(sid){
 			delFromStorage('email');
 			window.location.href = "/login";
 		}
-		else if(data.status != 200){
-			alert(data.message);
-		}
-		else{
+		else if(data.status == 200){
 
 			appendQuestion(data.data);
 		}
@@ -84,10 +98,7 @@ function checkToAddQuestion(){
 		uid = getFromStorage('user_id');
 		token = getFromStorage('token');
 		newQuestion(text, 1, uid, sid, token).then(function(data){
-			if(data.status != 200){
-				alert(data.message);
-			}
-			else{
+			if(data.status == 200){
 				loadQuestions(sid);
 			}
 		});
@@ -104,10 +115,7 @@ function addNewQuestion(){
 		});
 	}
 	getSubjects(getFromStorage('user_id'), getFromStorage('token')).then(function(data){
-		if(data.status != 200){
-			alert(data.message);
-		}
-		else{
+		if(data.status == 200){
 		 	selectDiv = document.createElement('div');
 			selectDiv.setAttribute('class', 'input-field col s12')
 			

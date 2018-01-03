@@ -31,7 +31,12 @@ class Subject(db):
             DELETE FROM Subjects
             WHERE id = ?
         '''
-        self.close_conn()
+        sql = '''
+            delete from Questions
+            where subject_id = ?
+        '''
+        self.create_conn()
+        a = self.do(sql, params=(id_,), commit=True)
         response = self.do(delSQL, params=(id_,), commit=True)
         self.close_conn()
         return response

@@ -123,6 +123,39 @@ def downloadHandler():
         return HTTP_ERR(status=400, message='File Does Not Exists')
     
     path = os.path.abspath(directory)
-    print(path, filename)
     return send_from_directory(path, filename, as_attachment=True)
-    
+
+
+@app.route('/api/subject/delete', methods=['GET', 'POST'])
+@secured()
+def subjectDelete():
+    tokenData = subjectDelete._token_data
+    tokenUserId = tokenData.get('id')
+
+    subject_id = getargs(request, 'subject_id')[0]
+    if not subject_id:
+        return HTTP_ERR(status=400, message='subject id is missing')
+    try:
+        subject_id = int(subject_id)
+    except:
+        return HTTP_ERR(status=400)
+    deleted = subjectAPI.delete(subject_id)
+    if deleted['code'] != 200:
+        return HTTP_ERR(status=deleted['code'], message=deleted['message'])
+    return HTTP_OK()
+
+
+@app.route('/api/question/delete', methods=['GET', 'POST'])
+@secured()
+def questionDelete():
+    question_id = getargs(request, 'question_id')[0]
+    if not question_id:
+        return HTTP_ERR(message='question id is missing', status=400)
+    try:
+        question_id = int(question_id)
+    except:
+        return HTTP_ERR(status=400)
+    deleted = questionAPI.delete(question_id)
+    if deleted['code'] != 200:
+        return HTTP_ERR(status=deleted['code'], message=deleted['message'])
+    return HTTP_OK()

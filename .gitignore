@@ -103,3 +103,5 @@ ENV/
 localrun.py
 
 files/
+
+exam.sqlite3
