@@ -117,14 +117,16 @@ function toDelQuestion(id, token){
 	});
 }
 
-function toGenerate(t_cnt, q_cnt, uid, sid, token){
+function toGenerate(t_cnt, q_cnt, uid, sid, token, header, footer){
 	return axios({
 		method: 'post',
 		url: '/api/generate/' + uid + '/' + sid,
 		data: {
 			'token': token,
 			'ticket_cnt': t_cnt,
-			'question_cnt': q_cnt
+			'question_cnt': q_cnt,
+			'header': header,
+			'footer': footer
 		}
 	}).then(function(response){
 		return response.data;

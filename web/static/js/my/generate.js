@@ -50,6 +50,15 @@ function generate(){
 			input2.setAttribute('type', 'text');
 			input2.placeholder = 'Кол-во вопросов'
 			input2.setAttribute('id', 'makeQuestionCount')
+
+			headerTextArea = document.createElement("textarea");
+			headerTextArea.setAttribute('id', 'header');
+			headerTextArea.placeholder = "Header";
+
+			footerTextArea = document.createElement("textarea");
+			footerTextArea.setAttribute('id', 'footer');
+			footerTextArea.placeholder = "Footer";
+
 			btn = document.createElement('button');
 			btn.setAttribute('onclick', 'checkToGenerate()');
 			btn.appendChild(document.createTextNode('Сохранить'));
@@ -58,6 +67,8 @@ function generate(){
 			div.appendChild(selectDiv);
 			div.appendChild(input);
 			div.appendChild(input2);
+			div.appendChild(headerTextArea);
+			div.appendChild(footerTextArea);
 			div.appendChild(btn);
 
 			content.appendChild(div);
@@ -74,6 +85,8 @@ function checkToGenerate(){
 	subjectInd = subject.selectedIndex;
 	makeQuestionCount = document.getElementById('makeQuestionCount').value;
 	makeTicketCount = document.getElementById('makeTicketCount').value;
+	header = document.getElementById('header').value;
+	footer = document.getElementById('footer').value;
 	if(subjectInd == 0 || !makeQuestionCount || !makeTicketCount){
 		alert("Заполни");
 	}
@@ -81,7 +94,7 @@ function checkToGenerate(){
 		sid = subject.options[subjectInd].value;
 		uid = getFromStorage('user_id');
 		token = getFromStorage('token');
-		toGenerate(makeTicketCount, makeQuestionCount, uid, sid, token).then(function(data){
+		toGenerate(makeTicketCount, makeQuestionCount, uid, sid, token, header, footer).then(function(data){
 			if(data.status != 200){
 				alert(data.message);
 			}

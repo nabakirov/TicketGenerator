@@ -88,7 +88,7 @@ def generate_handler(user_id, subject_id):
     tokenUserId = token_data.get('id')
     if tokenUserId != int(user_id):
         return HTTP_ERR(status=401, message='UNAUTHORIZED')
-    ticket_cnt, q_cnt = getargs(request, 'ticket_cnt', 'question_cnt')
+    ticket_cnt, q_cnt, header, footer = getargs(request, 'ticket_cnt', 'question_cnt', 'header', 'footer')
     if not ticket_cnt or not q_cnt:
         return HTTP_ERR(status=400, message='BAD REQUEST')
     try:
@@ -96,7 +96,7 @@ def generate_handler(user_id, subject_id):
         q_cnt = int(q_cnt)
     except:
         return HTTP_ERR(status=400, message='parameters must be integer')
-    generate = Generate(subject_id, user_id, ticket_cnt, q_cnt)
+    generate = Generate(subject_id, user_id, ticket_cnt, q_cnt, header, footer)
     if q_cnt > generate.count:
         return HTTP_ERR(status=400, message='can only make {} questions per ticket'.format(generate.count))
     tickets = generate.getTickets()
